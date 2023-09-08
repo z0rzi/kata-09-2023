@@ -1,0 +1,7 @@
+Dnd process:
+    On drag end:
+        1. The item gets aligned at its new position, with fixed css
+
+        2. The onDrop callback gets called, we wait...
+
+        3. We restore the old position of the item
