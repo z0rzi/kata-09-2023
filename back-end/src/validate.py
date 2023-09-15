@@ -25,4 +25,5 @@ def create_email_text(res):
     text = "future email text: \n"
     for i in res:
         text+=f"category: {i['category']}, month: {i['month']} \n"
+    return text
 
