@@ -10,9 +10,6 @@ def validate_data(data: list):
     grouped_df = df.groupby(["month", "category", "transaction_id"])['price'].sum().reset_index()
     grouped_df['percentage_change'] = grouped_df.groupby("category")['price'].pct_change().fillna(0)
     grouped_df['month_diff'] = grouped_df.groupby("category")["month"].diff().fillna(0)
-    # grouped_df['percentage_change_month'] = grouped_df.groupby("month")['price'].pct_change().fillna(0)
-    # print(f"validate_data 1: \n{grouped_df}")
-    # grouped_df['change_month'] = grouped_df.groupby('category')['price'].pct_change().fillna(0)
     result_df = grouped_df.query("percentage_change >= 0.5 & month_diff==1.0")
     res =[]
     for i, d in result_df.iterrows():
@@ -29,8 +26,14 @@ def validate_data(data: list):
 
 
 def create_email_text(res):
-    text = "future email text: \n"
+    text = """Hello Dear User!
+    
+    We have detected unusually high spending on your card in these categories: 
+
+    """
     for i in res:
-        text+=f"transaction_id: {i['transaction_id']}, price: {i['price']}, pct_change: {i['percentage_change']} category: {i['category']}, month: {i['month']} \n"
+        text+=f"transaction_id: {i['transaction_id']}, price: {i['price']}, pct_change: {round(i['percentage_change'], 2)} category: {i['category']}, month: {i['month']} \n"
+
+    text += "\nLove,\n\nThe Credit Card Company"
     return text
 
