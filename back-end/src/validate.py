@@ -2,7 +2,8 @@ import pandas as pd
 
 
 def validate_data(data: list):
-    df = pd.DataFrame(data)
+    df = pd.DataFrame(data, columns=["transaction_id", "date", "price", "category", "description"])
+    df["date"] = pd.to_datetime(df["date"], format="%Y-%m-%d")
     df["month"] = df["date"].dt.month
     grouped_df = df.groupby(["month", "category"])['price'].sum().reset_index()
     grouped_df['percentage_change'] = grouped_df.groupby('category')['price'].pct_change()
@@ -18,3 +19,10 @@ def validate_data(data: list):
             }
         )
     return res
+
+
+def create_email_text(res):
+    text = "future email text: \n"
+    for i in res:
+        text+=f"category: {i['category']}, month: {i['month']} \n"
+
