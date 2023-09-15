@@ -1,1 +1,3 @@
 src/venv
+venv/
+__pycache__/
