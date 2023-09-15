@@ -15,6 +15,7 @@ origins = [
     "http://localhost:3000",
 ]
 
+# Solving CORS problem
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -31,23 +32,21 @@ class Spending(BaseModel):
     category: str 
     description: str
 
-class SpendingList(BaseModel):
-    spending_item: List[Spending]
-
 
 @app.post("/validate/")
-def validate_spending(spending_list: List[Spending]):
-    spending_dicts = []
-    for spending in spending_list:
-        spending_dict = {
-            "transaction_id": spending.transaction_id,
-            "date": str(spending.date),  # Convert date to string in the desired format
-            "price": round(spending.price, 2),  # Round price to 2 decimal places
-            "category": spending.category,
-            "description": spending.description
-        }
-        spending_dicts.append(spending_dict)
-    res = validate_data(spending_dicts) 
+def validate_spending(spending_list: List[Spending], verbose: bool=False):
+    """The validaiton endpoint
+
+    Args:
+        spending_list (List[Spending]): List containing the Spending objects
+        verbose (bool): to provide logs
+
+    Returns:
+        dict: 
+            `send_email` (bool): If email were sent or not
+            `email_text` (str): If email was sent shows the email text 
+    """
+    res = validate_data(spending_list)
     if res:
         return {
             "email_sent": True,
@@ -55,5 +54,5 @@ def validate_spending(spending_list: List[Spending]):
         }
     return {
         "send_email": False,
-        "email_text": None
+        "email_text": ""
     }
